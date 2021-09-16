@@ -62,14 +62,20 @@ export class Grid2D {
         }
 
         // dark boxes
-        for (let i = 0; i < this.numBoxesX/4; i++) {
-            for (let j = 0; j < this.numBoxesY/4; j++) {
+        console.log((this.middleX/this.padding)%4);
+
+        // aligns the boxes with the center axis. First box may be cut off to only have 2-3 rather than 4 sub-boxes, 
+        // but middle will always be the same spot. 
+        const offsetX = (4-((this.middleX/this.padding)%4)) * this.padding;
+        const offsetY = (4-((this.middleY/this.padding)%4)) * this.padding;
+        for (let i = 0; i < this.numBoxesX/4+2; i++) {
+            for (let j = 0; j < this.numBoxesY/4+2; j++) {
                 ctx.beginPath();
                 // grid for every 4 boxes, a bit darker. Outlines primary numbers. 
                 const inc = this.padding * 4;
-                ctx.moveTo(i*inc, j*inc+inc);
-                ctx.lineTo(i*inc + inc, j*inc + inc)
-                ctx.lineTo(i*inc + inc, j*inc);
+                ctx.moveTo(i*inc - offsetX, j*inc+inc - offsetY);
+                ctx.lineTo(i*inc + inc - offsetX, j*inc + inc - offsetY)
+                ctx.lineTo(i*inc + inc - offsetX, j*inc - offsetY);
                 ctx.lineWidth = settings.grid.darkGridLineWidth;
                 ctx.stroke();
             }
@@ -80,8 +86,6 @@ export class Grid2D {
     //      the middle of the grid should be calclulated using FullWindowSize vector
 
     private drawAxis() {
-
-
         // x axis
         ctx.beginPath();
         ctx.moveTo(0, this.middleY);

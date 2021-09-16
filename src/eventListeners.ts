@@ -1,7 +1,7 @@
 import { canvas } from './domElements';
 
 import { FullWindowSize, Manager } from './types';
-import { mouse } from './settings';
+import { mouse, settings } from './settings';
 
 // generates all the event listeners via functions on a dom element. 
 // mainly does the following:
@@ -26,5 +26,10 @@ export function generateEventListeners(manager:Manager) {
     });
     window.addEventListener('mouseup', () => {
         mouse.isClicked = false;
+    });
+
+    window.addEventListener('wheel', (event) => {
+        settings.grid.padding -= event.deltaY/100;
+        settings.manager?.reset();
     });
 }
