@@ -1,11 +1,12 @@
 import { Grid2D } from './Grids';
-import { settings } from './settings';
+import { settings} from './settings';
 import { Dimensions, Manager } from './types';
 
 export class FractalManager implements Manager {
     private canvasManager!: CanvasManager;
 
     private init() {
+        settings.manager = this;
         if (settings.dimension == Dimensions.One) {
             this.canvasManager = new CanvasManager1D();
         } else if (settings.dimension == Dimensions.Two) {

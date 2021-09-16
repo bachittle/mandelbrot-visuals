@@ -4,7 +4,6 @@ import { settings } from './settings';
 
 export class Grid2D {
     padding: number;
-    paddingScale: number;
 
     numBoxesX: number;  // number of boxes on the X axis
     numBoxesY: number;  // number of boxes on the Y axis

@@ -1,8 +1,15 @@
 import { Dimensions } from './types';
 import * as dat from 'dat.gui';
+import { FractalManager } from './Managers';
 
-export const settings = {
+interface hasManager {
+    [key: string]: any; 
+    manager: FractalManager | null;
+}
+
+export const settings : hasManager = {
     debug: true,
+    manager: null,
     dimension: Dimensions.Two,
     iterations: {
         visible: true
@@ -32,6 +39,9 @@ if (settings.debug) {
         settings.dimension = Math.round(settings.dimension);
     });
 
+    datgui.add(settings.grid, 'padding', 1, 100).onChange(()=>{
+        settings.manager?.reset();
+    });
     datgui.add(settings.grid, 'gridLineWidth', 0.1, 0.7)
     datgui.add(settings.grid, 'darkGridLineWidth', 0.1, 0.7)
     datgui.add(settings.grid, 'mainAxisLineWidth', 0.2, 4)
