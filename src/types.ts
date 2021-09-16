@@ -1,6 +1,6 @@
 export enum Dimensions {
-    One,
-    Two
+    One=1,
+    Two=2
 }
 
 export enum Fractals {
@@ -9,6 +9,11 @@ export enum Fractals {
 }
 
 export class FullWindowSize {
-    static readonly width : number = window.innerWidth;
-    static readonly height : number = window.innerHeight;
+    static getWidth() { return window.innerWidth };
+    static getHeight() { return window.innerHeight };
+}
+
+export interface Manager {
+    update():void;
+    reset():void;
 }

@@ -1,14 +1,36 @@
-import { ctx } from './canvasElements';
+import { ctx } from './domElements';
 import { FullWindowSize } from './types';
+import { settings } from './settings';
 
 export class Grid2D {
-    padding = 40;
-    boxWidth: number;
-    boxHeight: number;
+    padding: number;
+
+    numBoxesX: number;  // number of boxes on the X axis
+    numBoxesY: number;  // number of boxes on the Y axis
+
+    middleX: number;
+    middleY: number;
+
+    offsetX: number;
+    offsetY: number;
 
     constructor() {
-        this.boxWidth = Math.ceil(FullWindowSize.width / this.padding);
-        this.boxHeight = Math.ceil(FullWindowSize.height / this.padding);
+        this.padding = settings.grid.padding;
+
+        this.numBoxesX = Math.ceil(FullWindowSize.getWidth() / this.padding);
+        this.numBoxesY = Math.ceil(FullWindowSize.getHeight() / this.padding);
+
+        // middleX and middleY of the grid. It is not precisely in the middle of the canvas, but instead in the middle of the grid. 
+        // if number of boxes on either X or Y is odd, it will adjust itself accordingly. 
+        this.middleX = (this.numBoxesX - (this.numBoxesX%2==0?0:1)) * this.padding / 2;
+        this.middleY = (this.numBoxesY - (this.numBoxesY%2==0?0:1)) * this.padding / 2;
+
+        // aligns the boxes with the center axis. First box may be cut off to only have 2-3 rather than 4 sub-boxes, 
+        // but middle will always be the same spot. 
+        this.offsetX = (4-((this.middleX/this.padding)%4)) * this.padding;
+        this.offsetY = (4-((this.middleY/this.padding)%4)) * this.padding;
+
+        console.log(this.numBoxesX, this.numBoxesY);
     }
 
     // -- main functions --
@@ -21,6 +43,7 @@ export class Grid2D {
     private draw() {
         this.drawGridLines();
         this.drawAxis();
+        this.drawNumbers();
     }
 
     // -- helper functions --
@@ -32,14 +55,30 @@ export class Grid2D {
         // - -
         //
         // each backwards L makes the grid shape
-        //
-        for (let i = 0; i < this.boxWidth; i++) {
-            for (let j = 0; j < this.boxHeight; j++) {
+        
+        // light boxes
+        for (let i = 0; i < this.numBoxesX; i++) {
+            for (let j = 0; j < this.numBoxesY; j++) {
+                // main grid. Secondary numbers, probably not shown until zoomed in. 
                 ctx.beginPath();
                 ctx.moveTo(i*this.padding, j*this.padding+this.padding);
                 ctx.lineTo(i*this.padding + this.padding, j*this.padding + this.padding)
                 ctx.lineTo(i*this.padding + this.padding, j*this.padding);
-                ctx.lineWidth = 1;
+                ctx.lineWidth = settings.grid.gridLineWidth;
+                ctx.stroke();
+            }
+        }
+
+        // dark boxes
+        for (let i = 0; i < this.numBoxesX/4+2; i++) {
+            for (let j = 0; j < this.numBoxesY/4+2; j++) {
+                ctx.beginPath();
+                // grid for every 4 boxes, a bit darker. Outlines primary numbers. 
+                const inc = this.padding * 4;
+                ctx.moveTo(i*inc - this.offsetX, j*inc+inc - this.offsetY);
+                ctx.lineTo(i*inc + inc - this.offsetX, j*inc + inc - this.offsetY)
+                ctx.lineTo(i*inc + inc - this.offsetX, j*inc - this.offsetY);
+                ctx.lineWidth = settings.grid.darkGridLineWidth;
                 ctx.stroke();
             }
         }
@@ -49,21 +88,50 @@ export class Grid2D {
     //      the middle of the grid should be calclulated using FullWindowSize vector
 
     private drawAxis() {
-        const width = this.boxWidth * this.padding;
-        const height = this.boxHeight * this.padding;
-
         // x axis
         ctx.beginPath();
-        ctx.moveTo(0, height/2);
-        ctx.lineTo(width, height/2);
-        ctx.lineWidth = 3;
+        ctx.moveTo(0, this.middleY);
+        ctx.lineTo(FullWindowSize.getWidth(), this.middleY);
+        ctx.lineWidth = settings.grid.mainAxisLineWidth;
         ctx.stroke();
 
         // y axis
         ctx.beginPath();
-        ctx.moveTo(width/2, 0);
-        ctx.lineTo(width/2, height);
+        ctx.moveTo(this.middleX, 0);
+        ctx.lineTo(this.middleX, FullWindowSize.getHeight());
         ctx.stroke();
     }
 
+    private drawNumbers() {
+        // this is based on the zoom parameter. A higer zoom will show smaller numbers in the grid (ex: count from 0.2, 0.4, ..., 1)
+        // and a lower zoom will show larger numbers (ex: count from 100, 200, ..., 1000)
+        // the default zoom (x1) will count each dark box as a unit of 1, and light box as a unit of 1/4.  
+
+        // zero at bottom right of center
+        ctx.font = settings.grid.fontStyle;
+        // horizontal numbers
+        for (let i = 1; i < this.numBoxesX/4; i++) {
+            const index = i-Math.floor(this.numBoxesX/8)-1;
+            ctx.fillText(
+                `${index}`, 
+                i*this.padding*4 - this.padding/2 - this.offsetX, 
+                this.middleY + this.padding/2
+            );
+        }
+
+        // vertical numbers
+        for (let i = 1; i < this.numBoxesY/4+2; i++) {
+            const index = i-Math.floor(this.numBoxesY/8)-1;
+
+            // skip when the index is zero. We write zero on the horizontal numbers. 
+            if (index == 0) {
+                continue;
+            }
+            ctx.fillText(
+                `${index}`, 
+                this.middleX + this.padding/2, 
+                i*this.padding*4 - this.padding/4 - this.offsetY
+            );
+        }
+    }
 }

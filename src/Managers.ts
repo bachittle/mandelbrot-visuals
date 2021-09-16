@@ -1,18 +1,28 @@
 import { Grid2D } from './Grids';
-import { settings } from './settings';
-import { Dimensions } from './types';
+import { settings} from './settings';
+import { Dimensions, Manager } from './types';
 
-export class FractalManager {
+export class FractalManager implements Manager {
     private canvasManager!: CanvasManager;
 
-    update() {
+    private init() {
+        settings.manager = this;
         if (settings.dimension == Dimensions.One) {
             this.canvasManager = new CanvasManager1D();
-            this.canvasManager.update();
         } else if (settings.dimension == Dimensions.Two) {
             this.canvasManager = new CanvasManager2D();
-            this.canvasManager.update();
         }
+    }
+
+    constructor() {
+        this.init();
+    }
+    reset() {
+        this.init();
+    }
+
+    update() {
+        this.canvasManager.update();
     }
 }
 
@@ -26,8 +36,12 @@ export class CanvasManager1D implements CanvasManager {
 }
 
 export class CanvasManager2D implements CanvasManager {
+    grid: Grid2D;
+
+    constructor() {
+        this.grid = new Grid2D();
+    }
     update() {
-        const grid = new Grid2D();
-        grid.update();
+        this.grid.update();
     }
 }
