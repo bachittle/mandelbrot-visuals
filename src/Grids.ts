@@ -11,6 +11,9 @@ export class Grid2D {
     middleX: number;
     middleY: number;
 
+    offsetX: number;
+    offsetY: number;
+
     constructor() {
         this.padding = settings.grid.padding;
 
@@ -21,6 +24,11 @@ export class Grid2D {
         // if number of boxes on either X or Y is odd, it will adjust itself accordingly. 
         this.middleX = (this.numBoxesX - (this.numBoxesX%2==0?0:1)) * this.padding / 2;
         this.middleY = (this.numBoxesY - (this.numBoxesY%2==0?0:1)) * this.padding / 2;
+
+        // aligns the boxes with the center axis. First box may be cut off to only have 2-3 rather than 4 sub-boxes, 
+        // but middle will always be the same spot. 
+        this.offsetX = (4-((this.middleX/this.padding)%4)) * this.padding;
+        this.offsetY = (4-((this.middleY/this.padding)%4)) * this.padding;
 
         console.log(this.numBoxesX, this.numBoxesY);
     }
@@ -62,20 +70,14 @@ export class Grid2D {
         }
 
         // dark boxes
-        console.log((this.middleX/this.padding)%4);
-
-        // aligns the boxes with the center axis. First box may be cut off to only have 2-3 rather than 4 sub-boxes, 
-        // but middle will always be the same spot. 
-        const offsetX = (4-((this.middleX/this.padding)%4)) * this.padding;
-        const offsetY = (4-((this.middleY/this.padding)%4)) * this.padding;
         for (let i = 0; i < this.numBoxesX/4+2; i++) {
             for (let j = 0; j < this.numBoxesY/4+2; j++) {
                 ctx.beginPath();
                 // grid for every 4 boxes, a bit darker. Outlines primary numbers. 
                 const inc = this.padding * 4;
-                ctx.moveTo(i*inc - offsetX, j*inc+inc - offsetY);
-                ctx.lineTo(i*inc + inc - offsetX, j*inc + inc - offsetY)
-                ctx.lineTo(i*inc + inc - offsetX, j*inc - offsetY);
+                ctx.moveTo(i*inc - this.offsetX, j*inc+inc - this.offsetY);
+                ctx.lineTo(i*inc + inc - this.offsetX, j*inc + inc - this.offsetY)
+                ctx.lineTo(i*inc + inc - this.offsetX, j*inc - this.offsetY);
                 ctx.lineWidth = settings.grid.darkGridLineWidth;
                 ctx.stroke();
             }
@@ -109,19 +111,27 @@ export class Grid2D {
         ctx.font = settings.grid.fontStyle;
         // horizontal numbers
         for (let i = 1; i < this.numBoxesX/4; i++) {
-            const index = i-Math.floor(this.numBoxesX/8);
-            ctx.fillText(`${index}`, i*this.padding*4 - this.padding/2, this.middleY + this.padding/2);
+            const index = i-Math.floor(this.numBoxesX/8)-1;
+            ctx.fillText(
+                `${index}`, 
+                i*this.padding*4 - this.padding/2 - this.offsetX, 
+                this.middleY + this.padding/2
+            );
         }
 
         // vertical numbers
-        for (let i = 1; i < this.numBoxesY/4; i++) {
-            const index = i-Math.floor(this.numBoxesY/8);
+        for (let i = 1; i < this.numBoxesY/4+2; i++) {
+            const index = i-Math.floor(this.numBoxesY/8)-1;
 
             // skip when the index is zero. We write zero on the horizontal numbers. 
             if (index == 0) {
                 continue;
             }
-            ctx.fillText(`${index}`, this.middleX + this.padding/2, FullWindowSize.getHeight() - (i*this.padding*4 - this.padding/4));
+            ctx.fillText(
+                `${index}`, 
+                this.middleX + this.padding/2, 
+                i*this.padding*4 - this.padding/4 - this.offsetY
+            );
         }
     }
 
