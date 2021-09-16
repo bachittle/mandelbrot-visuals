@@ -134,5 +134,4 @@ export class Grid2D {
             );
         }
     }
-
 }

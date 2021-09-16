@@ -17,7 +17,6 @@ export const settings : hasManager = {
     fractal: null,
     grid: {
         padding: 41,
-        paddingScale: 0.2,
         mainAxisLineWidth: 2,
         gridLineWidth: 0.3,
         darkGridLineWidth: 0.6,
