@@ -5,7 +5,7 @@ import { generateEventListeners } from './eventListeners';
 
 const manager = new FractalManager();
 
-generateEventListeners(manager);
+generateEventListeners();
 
 function animateLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);

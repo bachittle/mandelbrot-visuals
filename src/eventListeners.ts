@@ -1,6 +1,6 @@
 import { canvas } from './domElements';
 
-import { FullWindowSize, Manager } from './types';
+import { FullWindowSize } from './types';
 import { mouse, settings } from './settings';
 
 // generates all the event listeners via functions on a dom element. 
@@ -8,12 +8,12 @@ import { mouse, settings } from './settings';
 // - canvas is reset to fullscreen on each canvas resize
 // - mouse movement is captured and potentially used to move canvas (or dom) objects. 
 
-export function generateEventListeners(manager:Manager) {
+export function generateEventListeners() {
     window.addEventListener('resize', () => {
         canvas.width = FullWindowSize.getWidth();
         canvas.height = FullWindowSize.getHeight();
 
-        manager.reset();
+        settings.manager?.reset();
     });
 
     window.addEventListener('mousemove', (event) => {
