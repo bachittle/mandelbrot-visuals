@@ -9,9 +9,14 @@ export const settings = {
     },
     fractal: null,
     grid: {
+        padding: 40,
+        paddingScale: 0.2,
         mainAxisLineWidth: 2,
         gridLineWidth: 0.3,
-    }
+        darkGridLineWidth: 0.6,
+        fontStyle: '18px Arial',
+    },
+    zoom: 1,
 }
 
 export const mouse = {
@@ -28,5 +33,6 @@ if (settings.debug) {
     });
 
     datgui.add(settings.grid, 'gridLineWidth', 0.1, 0.7)
+    datgui.add(settings.grid, 'darkGridLineWidth', 0.1, 0.7)
     datgui.add(settings.grid, 'mainAxisLineWidth', 0.2, 4)
 }

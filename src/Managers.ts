@@ -35,8 +35,12 @@ export class CanvasManager1D implements CanvasManager {
 }
 
 export class CanvasManager2D implements CanvasManager {
+    grid: Grid2D;
+
+    constructor() {
+        this.grid = new Grid2D();
+    }
     update() {
-        const grid = new Grid2D();
-        grid.update();
+        this.grid.update();
     }
 }
