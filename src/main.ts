@@ -1,6 +1,6 @@
 import './style.css'
 import { FractalManager } from './Managers';
-import { ctx, canvas } from './canvasElements';
+import { ctx, canvas } from './domElements';
 import { generateEventListeners } from './eventListeners';
 
 const manager = new FractalManager();

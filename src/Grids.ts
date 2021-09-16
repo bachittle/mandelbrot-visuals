@@ -1,5 +1,6 @@
-import { ctx } from './canvasElements';
+import { ctx } from './domElements';
 import { FullWindowSize } from './types';
+import { settings } from './settings';
 
 export class Grid2D {
     padding = 40;
@@ -39,7 +40,7 @@ export class Grid2D {
                 ctx.moveTo(i*this.padding, j*this.padding+this.padding);
                 ctx.lineTo(i*this.padding + this.padding, j*this.padding + this.padding)
                 ctx.lineTo(i*this.padding + this.padding, j*this.padding);
-                ctx.lineWidth = 1;
+                ctx.lineWidth = settings.grid.gridLineWidth;
                 ctx.stroke();
             }
         }
@@ -55,13 +56,11 @@ export class Grid2D {
         const middleX = (this.boxWidth - (this.boxWidth%2==0?0:1)) * this.padding / 2;
         const middleY = (this.boxHeight - (this.boxHeight%2==0?0:1)) * this.padding / 2;
 
-        console.log(this.boxWidth, this.boxHeight);
-
         // x axis
         ctx.beginPath();
         ctx.moveTo(0, middleY);
         ctx.lineTo(FullWindowSize.getWidth(), middleY);
-        ctx.lineWidth = 3;
+        ctx.lineWidth = settings.grid.mainAxisLineWidth;
         ctx.stroke();
 
         // y axis

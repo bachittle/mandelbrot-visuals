@@ -1,6 +1,6 @@
 export enum Dimensions {
-    One,
-    Two
+    One=1,
+    Two=2
 }
 
 export enum Fractals {

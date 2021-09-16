@@ -1,4 +1,4 @@
-import { canvas } from './canvasElements';
+import { canvas } from './domElements';
 
 import { FullWindowSize, Manager } from './types';
 import { mouse } from './settings';
@@ -21,7 +21,10 @@ export function generateEventListeners(manager:Manager) {
         mouse.y = event.clientY;
     });
 
-    window.addEventListener('click', (event) => {
-        console.log(event);
+    window.addEventListener('mousedown', () => {
+        mouse.isClicked = true;
+    });
+    window.addEventListener('mouseup', () => {
+        mouse.isClicked = false;
     });
 }
