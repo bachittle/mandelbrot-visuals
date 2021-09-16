@@ -9,8 +9,8 @@ export enum Fractals {
 }
 
 export class FullWindowSize {
-    static width() { return window.innerWidth };
-    static height() { return window.innerHeight };
+    static getWidth() { return window.innerWidth };
+    static getHeight() { return window.innerHeight };
 }
 
 export interface Manager {

@@ -10,8 +10,8 @@ import { mouse } from './settings';
 
 export function generateEventListeners(manager:Manager) {
     window.addEventListener('resize', () => {
-        canvas.width = FullWindowSize.width();
-        canvas.height = FullWindowSize.height();
+        canvas.width = FullWindowSize.getWidth();
+        canvas.height = FullWindowSize.getHeight();
 
         manager.reset();
     });
