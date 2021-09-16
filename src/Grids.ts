@@ -7,8 +7,8 @@ export class Grid2D {
     boxHeight: number;
 
     constructor() {
-        this.boxWidth = Math.ceil(FullWindowSize.width / this.padding);
-        this.boxHeight = Math.ceil(FullWindowSize.height / this.padding);
+        this.boxWidth = Math.ceil(FullWindowSize.width() / this.padding);
+        this.boxHeight = Math.ceil(FullWindowSize.height() / this.padding);
     }
 
     // -- main functions --
@@ -54,15 +54,15 @@ export class Grid2D {
 
         // x axis
         ctx.beginPath();
-        ctx.moveTo(0, height/2);
-        ctx.lineTo(width, height/2);
+        ctx.moveTo(0, height/2 + this.padding/2);
+        ctx.lineTo(width, height/2 + this.padding/2);
         ctx.lineWidth = 3;
         ctx.stroke();
 
         // y axis
         ctx.beginPath();
-        ctx.moveTo(width/2, 0);
-        ctx.lineTo(width/2, height);
+        ctx.moveTo(width/2 + this.padding/2, 0);
+        ctx.lineTo(width/2 + this.padding/2, height);
         ctx.stroke();
     }
 

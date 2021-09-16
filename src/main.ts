@@ -1,8 +1,11 @@
 import './style.css'
 import { FractalManager } from './Managers';
 import { ctx, canvas } from './canvasElements';
+import { generateEventListeners } from './eventListeners';
 
 const manager = new FractalManager();
+
+generateEventListeners(manager);
 
 function animateLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
