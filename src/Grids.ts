@@ -118,7 +118,7 @@ export class Grid2D {
             if (index == 0) {
                 continue;
             }
-            ctx.fillText(`${index}`, this.middleX + this.padding/2, i*this.padding*4 - this.padding/4);
+            ctx.fillText(`${index}`, this.middleX + this.padding/2, FullWindowSize.getHeight() - (i*this.padding*4 - this.padding/4));
         }
     }
 
