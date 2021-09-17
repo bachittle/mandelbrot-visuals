@@ -17,19 +17,28 @@ export function generateEventListeners() {
     });
 
     window.addEventListener('mousemove', (event) => {
+        if (mouse.isClicked) {
+            settings.grid.originX += event.clientX - mouse.x;
+            settings.grid.originY += event.clientY - mouse.y;
+
+            settings.manager?.reset();
+        }
+
         mouse.x = event.clientX;
         mouse.y = event.clientY;
+
     });
 
     window.addEventListener('mousedown', () => {
         mouse.isClicked = true;
+
     });
     window.addEventListener('mouseup', () => {
         mouse.isClicked = false;
     });
 
     window.addEventListener('wheel', (event) => {
-        settings.grid.scale -= event.deltaY/100;
+        settings.grid.scale *= 1 - event.deltaY/1000;
         settings.manager?.reset();
     });
 }

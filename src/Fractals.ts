@@ -9,25 +9,24 @@ interface Fractal {
 }
 
 export class MandelbrotSet implements Fractal {
-    static updateCounter = 3;
+    scale: number;
 
     constructor(
         private coords: CustomCoords2D
-    ) {}
+    ) {
+        this.scale = settings.fractal.quality;
+    }
 
     update() {
-        if (MandelbrotSet.updateCounter < settings.grid.scale / 20) {
-            MandelbrotSet.updateCounter++;
-            console.log(MandelbrotSet.updateCounter);
-        }
         // calculate each pixel to see if that pixel is in the mandelbrot set. 
         // then draw the pixel if it is. 
-        for (let i = 0; i < canvas.width; i++) {
-            for (let j = 0; j < canvas.height; j++) {
+
+        for (let i = 0; i < canvas.width; i += this.scale) {
+            for (let j = 0; j < canvas.height; j += this.scale) {
                 const coords = this.coords.canvasToCustom(i,j);
-                const isInMandelbrot = this.calculateMandelbrot(math.complex(coords.x, coords.y), MandelbrotSet.updateCounter)
+                const isInMandelbrot = this.calculateMandelbrot(math.complex(coords.x, coords.y), 40)
                 if (isInMandelbrot) {
-                    ctx.fillRect(i,j,1,1);
+                    ctx.fillRect(i,j,this.scale,this.scale);
                 }
             }
         }
@@ -38,7 +37,7 @@ export class MandelbrotSet implements Fractal {
         // iterations of z=z^2+c
         for (let i = 0; i < iterations; i++) {
             z = (math.add(math.multiply(z,z),c) as math.Complex);
-            if (z.re > 2 || z.im > 2) {
+            if (z.re > 4 || z.im > 4) {
                 return false;
             }
         }

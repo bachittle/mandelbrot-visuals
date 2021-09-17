@@ -48,7 +48,8 @@ export class CanvasManager2D implements CanvasManager {
     private mandelbrot: MandelbrotSet;
 
     constructor() {
-        this.coords = new CustomCoords2D(canvas.width/2, canvas.height/2, settings.grid.scale);
+        console.log('new');
+        this.coords = new CustomCoords2D(settings.grid.originX, settings.grid.originY, settings.grid.scale);
         this.mandelbrot = new MandelbrotSet(this.coords);
         this.grid = new Grid2D(this.coords);
     }
