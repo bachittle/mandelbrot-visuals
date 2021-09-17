@@ -12,8 +12,13 @@ import { FullWindowSize } from "./types";
 export class CustomCoords2D {
 
 	constructor(
-		private maxValX: number,	// Max coordinate value to plug in. If origin is at top right then the top left would have an X value of maxValX. 
-		private maxValY: number,	// Same as maxValX but for Y axis. 
+		private maxValX: number,	// Max coordinate value to plug in. If origin is at left then the right would have an X value of maxValX. 
+		private maxValY: number,	// Same as maxValX but for Y axis. If origin is at top then botton would have a Y value of maxValY. 
+
+		// the zoom is calculated as follows:
+		// 1 - 1:1 ratio of unit to pixel on canvas. This is when maxValX = canvas.width or maxValY = canvas.height
+		// 0.5 - 1:2 ratio of pixels per unit. maxValX = canvas.width*2. Zoomed out. 
+		// 2 - 2:1 ratio of pixels per unit. maxValX = canvas.width/2 or canvas.width*0.5. Zoomed in. 
 
 		private originX: number,	// if 0, it is left of screen. If it is maxValX then it is right of screen. 
 		private originY: number,	// if 0, it is bottom of screen. If maxValY then it is top of screen. (if Y axis is the typical - below axis, + above axis)
