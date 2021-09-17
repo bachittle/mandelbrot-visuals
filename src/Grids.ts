@@ -78,10 +78,13 @@ export class Grid2D {
         // zero at bottom right of center
         ctx.font = settings.grid.fontStyle;
         // horizontal numbers
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i <= 3; i++) {
             ctx.fillText(`${i}`, this.coords.customToCanvasX(i)-5+(i==0?-10:0), this.coords.customToCanvasY(0)+20);
         }
 
         // vertical numbers
+        for (let i = 1; i < 3; i++) {
+            ctx.fillText(`${i}`, this.coords.customToCanvasX(0)+5, this.coords.customToCanvasY(i));
+        }
     }
 }
