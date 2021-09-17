@@ -13,22 +13,20 @@ export class MandelbrotSet implements Fractal {
 
     constructor(
         private coords: CustomCoords2D
-    ) {
-        setInterval(()=>{
-            if (MandelbrotSet.updateCounter < settings.grid.scale / 10) {
-                MandelbrotSet.updateCounter++;
-                console.log(MandelbrotSet.updateCounter);
-            }
-        },500);
-    }
+    ) {}
 
     update() {
+        if (MandelbrotSet.updateCounter < settings.grid.scale / 20) {
+            MandelbrotSet.updateCounter++;
+            console.log(MandelbrotSet.updateCounter);
+        }
         // calculate each pixel to see if that pixel is in the mandelbrot set. 
         // then draw the pixel if it is. 
         for (let i = 0; i < canvas.width; i++) {
             for (let j = 0; j < canvas.height; j++) {
                 const coords = this.coords.canvasToCustom(i,j);
-                if (this.calculateMandelbrot(math.complex(coords.x, coords.y), MandelbrotSet.updateCounter)) {
+                const isInMandelbrot = this.calculateMandelbrot(math.complex(coords.x, coords.y), MandelbrotSet.updateCounter)
+                if (isInMandelbrot) {
                     ctx.fillRect(i,j,1,1);
                 }
             }
