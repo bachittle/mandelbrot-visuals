@@ -16,14 +16,10 @@ export class FractalManager implements Manager {
             this.canvasManager = new CanvasManager2D();
         }
 
-        if (!settings.hasAnimationLoop) {
+        if (!settings.useAnimationLoop) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             this.update()
         }
-    }
-
-    checkMandelbrot(x:number, y:number) {
-        (this.canvasManager as CanvasManager2D).checkMandelbrot(x,y);
     }
 
     constructor() {
@@ -61,7 +57,7 @@ export class CanvasManager2D implements CanvasManager {
         this.mandelbrot.update();
     }
 
-    checkMandelbrot(x:number,y:number) {
-        console.log(this.mandelbrot.calculateMandelbrot(this.coords.canvasToCustomX(x), this.coords.canvasToCustomY(y)));
+    async mandelbrotJob() {
+
     }
 }

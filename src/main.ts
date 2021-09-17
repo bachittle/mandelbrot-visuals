@@ -13,7 +13,7 @@ function animateLoop() {
 
   manager.update();
 
-  if (settings.hasAnimationLoop) {
+  if (settings.useAnimationLoop) {
     requestAnimationFrame(animateLoop);
   }
 }

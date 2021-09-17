@@ -19,8 +19,6 @@ export function generateEventListeners() {
     window.addEventListener('mousemove', (event) => {
         mouse.x = event.clientX;
         mouse.y = event.clientY;
-
-        settings.manager?.checkMandelbrot(mouse.x, mouse.y);
     });
 
     window.addEventListener('mousedown', () => {
@@ -31,7 +29,7 @@ export function generateEventListeners() {
     });
 
     window.addEventListener('wheel', (event) => {
-        settings.grid.padding -= event.deltaY/100;
+        settings.grid.scale -= event.deltaY/100;
         settings.manager?.reset();
     });
 }
