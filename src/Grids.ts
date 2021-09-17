@@ -4,35 +4,9 @@ import { settings } from './settings';
 import { CustomCoords2D } from './Coords';
 
 export class Grid2D {
-    padding: number;
-
-    numBoxesX: number;  // number of boxes on the X axis
-    numBoxesY: number;  // number of boxes on the Y axis
-
-    middleX: number;
-    middleY: number;
-
-    offsetX: number;
-    offsetY: number;
-
     coords: CustomCoords2D;
 
     constructor() {
-        this.padding = settings.grid.padding;
-
-        this.numBoxesX = Math.ceil(FullWindowSize.getWidth() / this.padding);
-        this.numBoxesY = Math.ceil(FullWindowSize.getHeight() / this.padding);
-
-        // middleX and middleY of the grid. It is not precisely in the middle of the canvas, but instead in the middle of the grid. 
-        // if number of boxes on either X or Y is odd, it will adjust itself accordingly. 
-        this.middleX = (this.numBoxesX - (this.numBoxesX%2==0?0:1)) * this.padding / 2;
-        this.middleY = (this.numBoxesY - (this.numBoxesY%2==0?0:1)) * this.padding / 2;
-
-        // aligns the boxes with the center axis. First box may be cut off to only have 2-3 rather than 4 sub-boxes, 
-        // but middle will always be the same spot. 
-        this.offsetX = (4-((this.middleX/this.padding)%4)) * this.padding;
-        this.offsetY = (4-((this.middleY/this.padding)%4)) * this.padding;
-
         this.coords = new CustomCoords2D(canvas.width/2, canvas.height/2, settings.grid.scale);
     }
 
@@ -88,6 +62,7 @@ export class Grid2D {
                 ctx.moveTo(this.coords.customToCanvasX(i), this.coords.customToCanvasY(j));
                 ctx.lineTo(this.coords.customToCanvasX(i+1), this.coords.customToCanvasY(j));
                 ctx.lineTo(this.coords.customToCanvasX(i+1), this.coords.customToCanvasY(j+1));
+                ctx.lineWidth = settings.grid.gridLineWidth;
                 ctx.stroke();
             }
         }
@@ -103,6 +78,9 @@ export class Grid2D {
         // zero at bottom right of center
         ctx.font = settings.grid.fontStyle;
         // horizontal numbers
+        for (let i = 0; i < 4; i++) {
+            ctx.fillText(`${i}`, this.coords.customToCanvasX(i)-5+(i==0?-10:0), this.coords.customToCanvasY(0)+20);
+        }
 
         // vertical numbers
     }
