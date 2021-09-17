@@ -9,7 +9,7 @@ const manager = new FractalManager();
 generateEventListeners();
 
 const coords = new CustomCoords2D(10,10,canvas.width/2,canvas.height/2);
-const res = coords.translateCanvasToCustom(0, 0);
+const res = coords.translateCanvasToCustom(canvas.width / 2, canvas.height / 2);
 console.log(res);
 
 function animateLoop() {

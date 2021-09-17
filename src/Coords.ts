@@ -25,12 +25,12 @@ export class CustomCoords2D {
 	translateCanvasToCustom(x:number,y:number) {
 		const newX = (
 			(
-				(this.invertX ? -1 : 1) * (x - this.originX)
+				(this.invertX && (x-this.originX != 0)? -1 : 1) * (x - this.originX)
 			)/FullWindowSize.getWidth()
 		)*this.maxValX;
 		const newY = (
 			(
-				(this.invertY ? -1 : 1) * (y - this.originY)
+				(this.invertY && (y-this.originY != 0) ? -1 : 1) * (y - this.originY)
 			)/FullWindowSize.getHeight()
 		)*this.maxValY;
 
