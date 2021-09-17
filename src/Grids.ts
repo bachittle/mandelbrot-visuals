@@ -1,36 +1,13 @@
-import { ctx } from './domElements';
+import { ctx, canvas } from './domElements';
 import { FullWindowSize } from './types';
 import { settings } from './settings';
+import { CustomCoords2D } from './Coords';
 
 export class Grid2D {
-    padding: number;
-
-    numBoxesX: number;  // number of boxes on the X axis
-    numBoxesY: number;  // number of boxes on the Y axis
-
-    middleX: number;
-    middleY: number;
-
-    offsetX: number;
-    offsetY: number;
+    coords: CustomCoords2D;
 
     constructor() {
-        this.padding = settings.grid.padding;
-
-        this.numBoxesX = Math.ceil(FullWindowSize.getWidth() / this.padding);
-        this.numBoxesY = Math.ceil(FullWindowSize.getHeight() / this.padding);
-
-        // middleX and middleY of the grid. It is not precisely in the middle of the canvas, but instead in the middle of the grid. 
-        // if number of boxes on either X or Y is odd, it will adjust itself accordingly. 
-        this.middleX = (this.numBoxesX - (this.numBoxesX%2==0?0:1)) * this.padding / 2;
-        this.middleY = (this.numBoxesY - (this.numBoxesY%2==0?0:1)) * this.padding / 2;
-
-        // aligns the boxes with the center axis. First box may be cut off to only have 2-3 rather than 4 sub-boxes, 
-        // but middle will always be the same spot. 
-        this.offsetX = (4-((this.middleX/this.padding)%4)) * this.padding;
-        this.offsetY = (4-((this.middleY/this.padding)%4)) * this.padding;
-
-        console.log(this.numBoxesX, this.numBoxesY);
+        this.coords = new CustomCoords2D(canvas.width/2, canvas.height/2, settings.grid.scale);
     }
 
     // -- main functions --
@@ -41,12 +18,34 @@ export class Grid2D {
     }
 
     private draw() {
-        this.drawGridLines();
         this.drawAxis();
+        this.drawGridLines();
         this.drawNumbers();
     }
 
     // -- helper functions --
+
+    // drawAxis: axis is in the middle of the grid. 
+    //      the middle of the grid should be calclulated using FullWindowSize vector
+
+    private drawAxis() {
+        const origin = this.coords.customToCanvas(0,0);
+
+        if (origin.x > 0 && origin.x < FullWindowSize.getWidth() && origin.y > 0 && origin.y < FullWindowSize.getHeight()) {
+            // x axis
+            ctx.beginPath();
+            ctx.moveTo(0, origin.y);
+            ctx.lineTo(FullWindowSize.getWidth(), origin.y);
+            ctx.lineWidth = settings.grid.mainAxisLineWidth;
+            ctx.stroke();
+
+            // y axis
+            ctx.beginPath();
+            ctx.moveTo(origin.x, 0);
+            ctx.lineTo(origin.x, FullWindowSize.getHeight());
+            ctx.stroke();
+        }
+    }
 
     // drawGridLines: grid that covers entire screen, of squares. Like grid paper. 
     private drawGridLines() {
@@ -55,52 +54,21 @@ export class Grid2D {
         // - -
         //
         // each backwards L makes the grid shape
-        
-        // light boxes
-        for (let i = 0; i < this.numBoxesX; i++) {
-            for (let j = 0; j < this.numBoxesY; j++) {
-                // main grid. Secondary numbers, probably not shown until zoomed in. 
+
+        for (let i = -7; i < 7; i++) {
+            for (let j = -5; j < 5; j++) {
                 ctx.beginPath();
-                ctx.moveTo(i*this.padding, j*this.padding+this.padding);
-                ctx.lineTo(i*this.padding + this.padding, j*this.padding + this.padding)
-                ctx.lineTo(i*this.padding + this.padding, j*this.padding);
+                console.log(this.coords.customToCanvasX(i), this.coords.customToCanvasY(j));
+                ctx.moveTo(this.coords.customToCanvasX(i), this.coords.customToCanvasY(j));
+                ctx.lineTo(this.coords.customToCanvasX(i+1), this.coords.customToCanvasY(j));
+                ctx.lineTo(this.coords.customToCanvasX(i+1), this.coords.customToCanvasY(j+1));
                 ctx.lineWidth = settings.grid.gridLineWidth;
                 ctx.stroke();
             }
         }
-
-        // dark boxes
-        for (let i = 0; i < this.numBoxesX/4+2; i++) {
-            for (let j = 0; j < this.numBoxesY/4+2; j++) {
-                ctx.beginPath();
-                // grid for every 4 boxes, a bit darker. Outlines primary numbers. 
-                const inc = this.padding * 4;
-                ctx.moveTo(i*inc - this.offsetX, j*inc+inc - this.offsetY);
-                ctx.lineTo(i*inc + inc - this.offsetX, j*inc + inc - this.offsetY)
-                ctx.lineTo(i*inc + inc - this.offsetX, j*inc - this.offsetY);
-                ctx.lineWidth = settings.grid.darkGridLineWidth;
-                ctx.stroke();
-            }
-        }
+        
     }
 
-    // drawAxis: axis is in the middle of the grid. 
-    //      the middle of the grid should be calclulated using FullWindowSize vector
-
-    private drawAxis() {
-        // x axis
-        ctx.beginPath();
-        ctx.moveTo(0, this.middleY);
-        ctx.lineTo(FullWindowSize.getWidth(), this.middleY);
-        ctx.lineWidth = settings.grid.mainAxisLineWidth;
-        ctx.stroke();
-
-        // y axis
-        ctx.beginPath();
-        ctx.moveTo(this.middleX, 0);
-        ctx.lineTo(this.middleX, FullWindowSize.getHeight());
-        ctx.stroke();
-    }
 
     private drawNumbers() {
         // this is based on the zoom parameter. A higer zoom will show smaller numbers in the grid (ex: count from 0.2, 0.4, ..., 1)
@@ -110,28 +78,17 @@ export class Grid2D {
         // zero at bottom right of center
         ctx.font = settings.grid.fontStyle;
         // horizontal numbers
-        for (let i = 1; i < this.numBoxesX/4; i++) {
-            const index = i-Math.floor(this.numBoxesX/8)-1;
+        for (let i = -6; i <= 6; i++) {
             ctx.fillText(
-                `${index}`, 
-                i*this.padding*4 - this.padding/2 - this.offsetX, 
-                this.middleY + this.padding/2
+                `${i}`, 
+                this.coords.customToCanvasX(i)-5+(i==0?-10:0), 
+                this.coords.customToCanvasY(0)+20
             );
         }
 
         // vertical numbers
-        for (let i = 1; i < this.numBoxesY/4+2; i++) {
-            const index = i-Math.floor(this.numBoxesY/8)-1;
-
-            // skip when the index is zero. We write zero on the horizontal numbers. 
-            if (index == 0) {
-                continue;
-            }
-            ctx.fillText(
-                `${index}`, 
-                this.middleX + this.padding/2, 
-                i*this.padding*4 - this.padding/4 - this.offsetY
-            );
+        for (let i = -4; i <= 4; i++) {
+            ctx.fillText(`${i}`, this.coords.customToCanvasX(0)+5, this.coords.customToCanvasY(i));
         }
     }
 }

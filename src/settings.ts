@@ -16,7 +16,7 @@ export const settings : hasManager = {
     },
     fractal: null,
     grid: {
-        padding: 41,
+        scale: 100,
         mainAxisLineWidth: 2,
         gridLineWidth: 0.3,
         darkGridLineWidth: 0.6,
@@ -38,7 +38,7 @@ if (settings.debug) {
         settings.dimension = Math.round(settings.dimension);
     });
 
-    datgui.add(settings.grid, 'padding', 1, 100).onChange(()=>{
+    datgui.add(settings.grid, 'scale', 1, 100).onChange(()=>{
         settings.manager?.reset();
     });
     datgui.add(settings.grid, 'gridLineWidth', 0.1, 0.7)
