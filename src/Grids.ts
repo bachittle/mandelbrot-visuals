@@ -1,14 +1,11 @@
-import { ctx, canvas } from './domElements';
-import { FullWindowSize } from './types';
+import { canvas, ctx } from './domElements';
 import { settings } from './settings';
 import { CustomCoords2D } from './Coords';
 
 export class Grid2D {
-    coords: CustomCoords2D;
-
-    constructor() {
-        this.coords = new CustomCoords2D(canvas.width/2, canvas.height/2, settings.grid.scale);
-    }
+    constructor(
+        private coords: CustomCoords2D
+    ) {}
 
     // -- main functions --
 
@@ -25,24 +22,21 @@ export class Grid2D {
 
     // -- helper functions --
 
-    // drawAxis: axis is in the middle of the grid. 
-    //      the middle of the grid should be calclulated using FullWindowSize vector
-
     private drawAxis() {
         const origin = this.coords.customToCanvas(0,0);
 
-        if (origin.x > 0 && origin.x < FullWindowSize.getWidth() && origin.y > 0 && origin.y < FullWindowSize.getHeight()) {
+        if (origin.x > 0 && origin.x < canvas.width && origin.y > 0 && origin.y < canvas.height) {
             // x axis
             ctx.beginPath();
             ctx.moveTo(0, origin.y);
-            ctx.lineTo(FullWindowSize.getWidth(), origin.y);
+            ctx.lineTo(canvas.width, origin.y);
             ctx.lineWidth = settings.grid.mainAxisLineWidth;
             ctx.stroke();
 
             // y axis
             ctx.beginPath();
             ctx.moveTo(origin.x, 0);
-            ctx.lineTo(origin.x, FullWindowSize.getHeight());
+            ctx.lineTo(origin.x, canvas.height);
             ctx.stroke();
         }
     }
@@ -58,7 +52,6 @@ export class Grid2D {
         for (let i = -7; i < 7; i++) {
             for (let j = -5; j < 5; j++) {
                 ctx.beginPath();
-                console.log(this.coords.customToCanvasX(i), this.coords.customToCanvasY(j));
                 ctx.moveTo(this.coords.customToCanvasX(i), this.coords.customToCanvasY(j));
                 ctx.lineTo(this.coords.customToCanvasX(i+1), this.coords.customToCanvasY(j));
                 ctx.lineTo(this.coords.customToCanvasX(i+1), this.coords.customToCanvasY(j+1));

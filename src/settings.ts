@@ -23,6 +23,9 @@ export const settings : hasManager = {
         fontStyle: '18px Arial',
     },
     zoom: 1,
+
+    // may speed up code, must call update functions manually on item changes. 
+    useAnimationLoop: false,
 }
 
 export const mouse = {
@@ -38,7 +41,7 @@ if (settings.debug) {
         settings.dimension = Math.round(settings.dimension);
     });
 
-    datgui.add(settings.grid, 'scale', 1, 100).onChange(()=>{
+    datgui.add(settings.grid, 'scale', 1, 300).onChange(()=>{
         settings.manager?.reset();
     });
     datgui.add(settings.grid, 'gridLineWidth', 0.1, 0.7)

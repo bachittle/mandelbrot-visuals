@@ -2,6 +2,7 @@ import './style.css'
 import { FractalManager } from './Managers';
 import { ctx, canvas } from './domElements';
 import { generateEventListeners } from './eventListeners';
+import { settings } from './settings';
 
 const manager = new FractalManager();
 
@@ -12,7 +13,9 @@ function animateLoop() {
 
   manager.update();
 
-  requestAnimationFrame(animateLoop);
+  if (settings.hasAnimationLoop) {
+    requestAnimationFrame(animateLoop);
+  }
 }
 
 animateLoop();

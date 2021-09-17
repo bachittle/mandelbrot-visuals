@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/dat.gui": "^0.7.7",
-    "dat.gui": "^0.7.7"
+    "dat.gui": "^0.7.7",
+    "mathjs": "^9.4.5"
   }
 }

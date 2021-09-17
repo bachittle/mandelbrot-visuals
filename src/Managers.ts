@@ -1,3 +1,6 @@
+import { CustomCoords2D } from './Coords';
+import { canvas, ctx } from './domElements';
+import { MandelbrotSet } from './Fractals';
 import { Grid2D } from './Grids';
 import { settings} from './settings';
 import { Dimensions, Manager } from './types';
@@ -12,6 +15,15 @@ export class FractalManager implements Manager {
         } else if (settings.dimension == Dimensions.Two) {
             this.canvasManager = new CanvasManager2D();
         }
+
+        if (!settings.hasAnimationLoop) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            this.update()
+        }
+    }
+
+    checkMandelbrot(x:number, y:number) {
+        (this.canvasManager as CanvasManager2D).checkMandelbrot(x,y);
     }
 
     constructor() {
@@ -31,17 +43,25 @@ interface CanvasManager {
 }
 
 export class CanvasManager1D implements CanvasManager {
-    update() {
-    }
+    update() {}
 }
 
 export class CanvasManager2D implements CanvasManager {
-    grid: Grid2D;
+    private coords: CustomCoords2D;
+    private grid: Grid2D;
+    private mandelbrot: MandelbrotSet;
 
     constructor() {
-        this.grid = new Grid2D();
+        this.coords = new CustomCoords2D(canvas.width/2, canvas.height/2, settings.grid.scale);
+        this.mandelbrot = new MandelbrotSet(this.coords);
+        this.grid = new Grid2D(this.coords);
     }
     update() {
         this.grid.update();
+        this.mandelbrot.update();
+    }
+
+    checkMandelbrot(x:number,y:number) {
+        console.log(this.mandelbrot.calculateMandelbrot(this.coords.canvasToCustomX(x), this.coords.canvasToCustomY(y)));
     }
 }
